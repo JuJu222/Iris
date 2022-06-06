@@ -1,6 +1,11 @@
 import numpy
+import numpy as np
 from PIL import Image
 from keras import layers, models, preprocessing
+from keras.applications.densenet import preprocess_input
+from keras.saving.model_config import model_from_json
+from keras_preprocessing import image
+
 
 def train():
     datagen = preprocessing.image.ImageDataGenerator(
@@ -69,5 +74,31 @@ def train():
     model.save_weights("model.h5")
 
 
+def predict(img, model):
+    img = Image.open(img)
+    img = numpy.array(img)
+    img = Image.fromarray(img, 'RGB').convert('L')
+    img = numpy.array(img.resize((24, 24))).astype('float32')
+    img /= 255
+    img = img.reshape(1, 24, 24, 1)
+    prediction = model.predict(img)
+
+    print(prediction[0][0])
+    if prediction > 0.5:
+        prediction = 'open'
+    else:
+        prediction = 'closed'
+    return prediction
+
+
 if __name__ == '__main__':
-    train()
+    # train()
+    json_file = open('model.json', 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights("model.h5")
+    loaded_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    print(predict('tmp/1.jpg', loaded_model))
+    print(predict('tmp/right-77.jpg', loaded_model))
