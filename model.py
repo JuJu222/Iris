@@ -1,10 +1,7 @@
 import numpy
-import numpy as np
 from PIL import Image
 from keras import layers, models, preprocessing
-from keras.applications.densenet import preprocess_input
 from keras.saving.model_config import model_from_json
-from keras_preprocessing import image
 
 
 def train():
@@ -40,20 +37,15 @@ def train():
     STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
     STEP_SIZE_VALID = test_generator.n // test_generator.batch_size
 
+    # Reference: https://github.com/Guarouba/face_rec
     model = models.Sequential()
-
     model.add(layers.Conv2D(6, (3, 3), activation='relu', input_shape=(24, 24, 1)))
     model.add(layers.AveragePooling2D())
-
     model.add(layers.Conv2D(16, (3, 3), activation='relu'))
     model.add(layers.AveragePooling2D())
-
     model.add(layers.Flatten())
-
     model.add(layers.Dense(120, activation='relu'))
-
     model.add(layers.Dense(84, activation='relu'))
-
     model.add(layers.Dense(1, activation='sigmoid'))
 
     model.summary()
@@ -75,15 +67,14 @@ def train():
 
 
 def predict(img, model):
-    img = Image.open(img)
+    # img = Image.open(img)
     img = numpy.array(img)
-    img = Image.fromarray(img, 'RGB').convert('L')
+    img = Image.fromarray(img, 'L')
     img = numpy.array(img.resize((24, 24))).astype('float32')
     img /= 255
     img = img.reshape(1, 24, 24, 1)
-    prediction = model.predict(img)
+    prediction = model.predict(img, verbose=0)
 
-    print(prediction[0][0])
     if prediction > 0.5:
         prediction = 'open'
     else:
@@ -91,8 +82,7 @@ def predict(img, model):
     return prediction
 
 
-if __name__ == '__main__':
-    # train()
+def load_model():
     json_file = open('model.json', 'r')
     loaded_model_json = json_file.read()
     json_file.close()
@@ -100,5 +90,12 @@ if __name__ == '__main__':
     # load weights into new model
     loaded_model.load_weights("model.h5")
     loaded_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    print(predict('tmp/1.jpg', loaded_model))
-    print(predict('tmp/right-77.jpg', loaded_model))
+
+    return loaded_model
+
+
+if __name__ == '__main__':
+    # train()
+    model = load_model()
+    print(predict('tmp/left-1.jpg', model))
+    print(predict('tmp/left-63.jpg', model))
