@@ -90,8 +90,8 @@ while True:
         if runtime % 60 == 1 and warned is False:
             warned = True
             winsound.PlaySound('SystemExclamation', winsound.SND_ASYNC)
-            ctypes.windll.user32.MessageBoxW(0, "You need to keep your number of blinks per minute above 17 to avoid "
-                                                "eyestrain!", "Warning!", 0)
+            ctypes.windll.user32.MessageBoxW(0, "You need to keep your number of blinks per minute 17 and above to "
+                                                "avoid eyestrain!", "Warning!", 0)
 
     if runtime % 60 == 2 and warned:
         warned = False
@@ -112,11 +112,11 @@ while True:
     cv2.putText(img, "Blinks per minute: " + str(blinks_per_minute) + " (Total blinks = {})"
                 .format(blink_counter), (20, 70), font_face, scale, bpm_text_color, 1, cv2.LINE_AA)
 
-    txt_size = cv2.getTextSize("(Optimal number of blinks: > 17)", font_face, scale, thickness)
+    txt_size = cv2.getTextSize("(Optimal number of blinks: 17 and above)", font_face, scale, thickness)
     end_x = 30 + txt_size[0][0] + margin
     end_y = 100 - txt_size[0][1] - margin
     cv2.rectangle(img, (10, 110), (end_x, end_y), (255, 255, 255), thickness)
-    cv2.putText(img, "(Optimal number of blinks per minute: > 17)", (20, 102), font_face, 0.4, bpm_text_color, 1,
+    cv2.putText(img, "(Optimal number of blinks per minute: > 17 and above)", (20, 102), font_face, 0.4, bpm_text_color, 1,
                 cv2.LINE_AA)
 
     cv2.imshow('Iris - Eye Strain Prevention (Press ESC to quit)', img)
