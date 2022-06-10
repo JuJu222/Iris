@@ -116,7 +116,7 @@ while True:
     end_x = 30 + txt_size[0][0] + margin
     end_y = 100 - txt_size[0][1] - margin
     cv2.rectangle(img, (10, 110), (end_x, end_y), (255, 255, 255), thickness)
-    cv2.putText(img, "(Optimal number of blinks per minute: > 17 and above)", (20, 102), font_face, 0.4, bpm_text_color, 1,
+    cv2.putText(img, "(Optimal number of blinks per minute: 17 and above)", (20, 102), font_face, 0.4, bpm_text_color, 1,
                 cv2.LINE_AA)
 
     cv2.imshow('Iris - Eye Strain Prevention (Press ESC to quit)', img)
