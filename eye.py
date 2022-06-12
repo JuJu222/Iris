@@ -5,10 +5,11 @@ import winsound
 import cv2
 import time
 from statistics import mean
+import memory_profiler as mem_profile
 
 # Reference: https://stackoverflow.com/questions/47377032/python-opencv-detect-eyes-and-save
 # Reference 2: https://pythonprogramming.net/haar-cascade-face-eye-detection-python-opencv-tutorial
-
+# Reference 3: https://stackoverflow.com/questions/41191412/no-module-named-mem-profile
 # https://github.com/Itseez/opencv/blob/master/data/haarcascades
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 open_eyes_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye_tree_eyeglasses.xml')
@@ -16,6 +17,7 @@ left_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_le
 right_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2splits.xml')
 
 time_list = []
+space_list = []
 video_capture = cv2.VideoCapture(0)
 left_count = 1
 right_count = 1
@@ -29,7 +31,8 @@ while True:
     ret, img = video_capture.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)
-
+    time_complex_start = time.time()
+    memory_before = mem_profile.memory_usage()[0]
     for (x, y, w, h) in faces:
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         roi_gray = gray[y:y + h, x:x + w]
@@ -50,7 +53,6 @@ while True:
                     is_eye_closed = False
                     blink_counter += 1
         else:
-            time_complex_start = time.time()
             left_eyes = left_eye_cascade.detectMultiScale(roi_gray)
             for (ex, ey, ew, eh) in left_eyes:
                 crop_img = roi_color[ey: ey + eh, ex: ex + ew]
@@ -60,8 +62,11 @@ while True:
                 pred = predict(crop_img, model)
                 time_complex_finish = time.time()
                 time_calculated = round((time_complex_finish - time_complex_start) * 1000)
+                memory_after = mem_profile.memory_usage()[0]
                 time_list.append(time_calculated)
+                space_list.append(memory_after - memory_before)
                 print("Time: ",time_calculated,"ms")
+                print("Space: ",str(memory_after - memory_before),"MB")
                 print("Finished predicting.")
                 if pred == 'closed':
                     color = (0, 0, 255)
@@ -77,8 +82,11 @@ while True:
                 pred = predict(crop_img, model)
                 time_complex_finish = time.time()
                 time_calculated = round((time_complex_finish - time_complex_start) * 1000)
+                memory_after = mem_profile.memory_usage()[0]
                 time_list.append(time_calculated)
+                space_list.append(memory_after - memory_before)
                 print("Time: ",time_calculated,"ms")
+                print("Space: ",str(memory_after - memory_before),"MB")
                 print("Finished predicting.")
                 if pred == 'closed':
                     color = (0, 0, 255)
@@ -137,7 +145,9 @@ while True:
     # Pencet escape utk berhenti
     if k == 27:
         time_average = mean(time_list)
+        space_average = mean(space_list)
         print("Average time taken for predicting: ", time_average, "ms")
+        print("Average space of memory taken for predicting: ", space_average, "MB")
         break
 
 video_capture.release()
