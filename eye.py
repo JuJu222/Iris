@@ -4,6 +4,7 @@ from model import load_model, predict
 import winsound
 import cv2
 import time
+from statistics import mean
 
 # Reference: https://stackoverflow.com/questions/47377032/python-opencv-detect-eyes-and-save
 # Reference 2: https://pythonprogramming.net/haar-cascade-face-eye-detection-python-opencv-tutorial
@@ -14,6 +15,7 @@ open_eyes_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_
 left_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
 right_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2splits.xml')
 
+time_list = []
 video_capture = cv2.VideoCapture(0)
 left_count = 1
 right_count = 1
@@ -57,7 +59,9 @@ while True:
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
                 time_complex_finish = time.time()
-                print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
+                time_calculated = round((time_complex_finish - time_complex_start) * 1000)
+                time_list.append(time_calculated)
+                print("Time: ",time_calculated,"ms")
                 print("Finished predicting.")
                 if pred == 'closed':
                     color = (0, 0, 255)
@@ -72,7 +76,9 @@ while True:
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
                 time_complex_finish = time.time()
-                print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
+                time_calculated = round((time_complex_finish - time_complex_start) * 1000)
+                time_list.append(time_calculated)
+                print("Time: ",time_calculated,"ms")
                 print("Finished predicting.")
                 if pred == 'closed':
                     color = (0, 0, 255)
@@ -130,6 +136,8 @@ while True:
     k = cv2.waitKey(30) & 0xff
     # Pencet escape utk berhenti
     if k == 27:
+        time_average = mean(time_list)
+        print("Average time taken for predicting: ", time_average, "ms")
         break
 
 video_capture.release()
