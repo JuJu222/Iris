@@ -7,7 +7,7 @@ Kevin Sander Utomo - 0706012010064
 Kenny Jinhiro Wibowo - 0706012010024
 
 ###### What is Iris?
-Iris is an An AI system designed with the purpose of preventing Digital Eye Strain (DES) when using Visual Display Terminals (VDTs) for extensive periods of time by warning the user if they are not blinking in the normal range of blinks per minute.
+Iris is an AI system designed with the purpose of preventing Digital Eye Strain (DES) when using Visual Display Terminals (VDTs) for extensive periods of time by warning the user if they are not blinking in the normal range of blinks per minute.
 
 ###### Instructions
 > 1. First extract the zip file of the application that has been downloaded <br />
