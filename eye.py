@@ -14,7 +14,7 @@ open_eyes_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_
 left_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
 right_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2splits.xml')
 
-video_capture = cv2.VideoCapture(1)
+video_capture = cv2.VideoCapture(0)
 left_count = 1
 right_count = 1
 model = load_model()
@@ -48,6 +48,7 @@ while True:
                     is_eye_closed = False
                     blink_counter += 1
         else:
+            time_complex_start = time.time()
             left_eyes = left_eye_cascade.detectMultiScale(roi_gray)
             for (ex, ey, ew, eh) in left_eyes:
                 crop_img = roi_color[ey: ey + eh, ex: ex + ew]
@@ -56,6 +57,8 @@ while True:
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
                 if pred == 'closed':
+                    time_complex_finish = time.time()
+                    print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
                     color = (0, 0, 255)
                     is_eye_closed = True
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), color, 2)
@@ -68,6 +71,8 @@ while True:
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
                 if pred == 'closed':
+                    time_complex_finish = time.time()
+                    print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
                     color = (0, 0, 255)
                     is_eye_closed = True
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), color, 2)
