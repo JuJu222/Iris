@@ -56,9 +56,10 @@ while True:
                 crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
+                time_complex_finish = time.time()
+                print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
+                print("Finished predicting.")
                 if pred == 'closed':
-                    time_complex_finish = time.time()
-                    print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
                     color = (0, 0, 255)
                     is_eye_closed = True
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), color, 2)
@@ -70,9 +71,10 @@ while True:
                 crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
+                time_complex_finish = time.time()
+                print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
+                print("Finished predicting.")
                 if pred == 'closed':
-                    time_complex_finish = time.time()
-                    print("Time: ", round((time_complex_finish - time_complex_start) * 1000), "ms")
                     color = (0, 0, 255)
                     is_eye_closed = True
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), color, 2)
