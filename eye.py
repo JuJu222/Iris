@@ -5,8 +5,6 @@ from model import load_model, predict
 import winsound
 import cv2
 import time
-from statistics import mean
-import memory_profiler as mem_profile
 
 # Reference: https://stackoverflow.com/questions/47377032/python-opencv-detect-eyes-and-save
 # Reference 2: https://pythonprogramming.net/haar-cascade-face-eye-detection-python-opencv-tutorial
@@ -21,8 +19,6 @@ open_eyes_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_
 left_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
 right_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2splits.xml')
 
-time_list = []
-space_list = []
 video_capture = cv2.VideoCapture(int(sys.argv[1]))
 left_count = 1
 right_count = 1
@@ -36,8 +32,6 @@ while True:
     ret, img = video_capture.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)
-    time_complex_start = time.time()
-    memory_before = mem_profile.memory_usage()[0]
 
     for (x, y, w, h) in faces:
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -66,14 +60,6 @@ while True:
                 crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
-                time_complex_finish = time.time()
-                time_calculated = round((time_complex_finish - time_complex_start) * 1000)
-                memory_after = mem_profile.memory_usage()[0]
-                time_list.append(time_calculated)
-                space_list.append(memory_after - memory_before)
-                print("Time: ",time_calculated,"ms")
-                print("Space: ",str(memory_after - memory_before),"MB")
-                print("Finished predicting.")
                 if pred == 'closed':
                     color = (0, 0, 255)
                     is_eye_closed = True
@@ -86,14 +72,6 @@ while True:
                 crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
                 crop_img = cv2.resize(crop_img, (24, 24))
                 pred = predict(crop_img, model)
-                time_complex_finish = time.time()
-                time_calculated = round((time_complex_finish - time_complex_start) * 1000)
-                memory_after = mem_profile.memory_usage()[0]
-                time_list.append(time_calculated)
-                space_list.append(memory_after - memory_before)
-                print("Time: ",time_calculated,"ms")
-                print("Space: ",str(memory_after - memory_before),"MB")
-                print("Finished predicting.")
                 if pred == 'closed':
                     color = (0, 0, 255)
                     is_eye_closed = True
@@ -150,10 +128,6 @@ while True:
     k = cv2.waitKey(30) & 0xff
     # Pencet escape utk berhenti
     if k == 27:
-        time_average = mean(time_list)
-        space_average = mean(space_list)
-        print("Average time taken for predicting: ", time_average, "ms")
-        print("Average space of memory taken for predicting: ", space_average, "MB")
         break
 
 video_capture.release()
