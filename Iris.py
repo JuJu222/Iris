@@ -11,7 +11,7 @@ import time
 # Reference 3: https://stackoverflow.com/questions/41191412/no-module-named-mem-profile
 
 if len(sys.argv) != 2:
-    sys.exit("Please enter the correct arguments: python eye.py {Webcam Number (0 for default webcam)} (ex: python eye.py 0)")
+    sys.exit("Please enter the correct arguments: python Iris.py {Webcam Number (0 for default webcam)} (ex: python Iris.py 0)")
 
 # https://github.com/Itseez/opencv/blob/master/data/haarcascades
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
