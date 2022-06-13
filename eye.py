@@ -1,5 +1,7 @@
 import ctypes
 import datetime
+import sys
+
 from model import load_model, predict
 import winsound
 import cv2
@@ -8,13 +10,16 @@ import time
 # Reference: https://stackoverflow.com/questions/47377032/python-opencv-detect-eyes-and-save
 # Reference 2: https://pythonprogramming.net/haar-cascade-face-eye-detection-python-opencv-tutorial
 
+if len(sys.argv) != 2:
+    sys.exit("Please enter the correct arguments: python eye.py {Webcam Number (0 for default webcam)} (ex: python eye.py 0)")
+
 # https://github.com/Itseez/opencv/blob/master/data/haarcascades
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 open_eyes_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye_tree_eyeglasses.xml')
 left_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lefteye_2splits.xml')
 right_eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_righteye_2splits.xml')
 
-video_capture = cv2.VideoCapture(1)
+video_capture = cv2.VideoCapture(int(sys.argv[1]))
 left_count = 1
 right_count = 1
 model = load_model()
